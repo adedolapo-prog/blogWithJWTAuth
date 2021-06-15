@@ -10,6 +10,14 @@ const handleErrors = err => {
     return errors
   }
 
+  //incorrect login details
+  if (err.message === "email or password is incorrect 2") {
+    errors.email = "email or password is incorrect 2"
+  }
+
+  if (err.message === "email or password is incorrect 1") {
+    errors.email = "email or password is incorrect 1"
+  }
   //validation error
   if (err.message.includes("user validation failed")) {
     Object.values(err.errors).forEach(({ properties }) => {
@@ -51,8 +59,16 @@ module.exports.login_post = async (req, res) => {
 
   try {
     const user = await User.login(email, password)
+    const token = createToken(user._id)
+    res.cookie("jwt", token, { httpOnly: true, maxAge: maxAge * 1000 })
     res.status(200).json({ user: user._id })
   } catch (error) {
-    res.status(400).json({})
+    const errors = handleErrors(error)
+    res.status(400).json({ errors })
   }
+}
+
+module.exports.logout_get = (req, res) => {
+  res.cookie("jwt", " ", { maxAge: 1 })
+  res.redirect("/")
 }
