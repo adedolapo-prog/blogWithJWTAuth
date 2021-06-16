@@ -4,6 +4,8 @@ const mongoose = require("mongoose")
 const cookieParser = require("cookie-parser")
 const app = express()
 
+require("dotenv").config()
+
 const router = require("./routes/authRoute.js")
 
 // middleware
@@ -16,8 +18,8 @@ app.use(cookieParser())
 app.set("view engine", "ejs")
 
 // database connection
-const dbURI =
-  "mongodb+srv://admin_blog:1T4MxvxwEdtigUp8@blogcluster.so1im.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+const dbURI = process.env.DBURI
+
 mongoose
   .connect(dbURI, {
     useNewUrlParser: true,
